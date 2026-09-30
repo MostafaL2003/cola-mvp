@@ -8,6 +8,10 @@
 @theme {
   --color-coke-red: #f40009;
   --color-coke-dark: #121212;
+  --color-coke-surface: #1e1e20;
+  --color-brand-navy: #08415c;
+  --color-metric-label: #2c3e50;
+  --color-metric-data: #8d9192;
   --color-status-running: #22c55e;
   --color-status-downtime: #ef4444;
   --color-status-idle: #6b7280;

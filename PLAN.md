@@ -51,10 +51,10 @@ This plan tracks the 8 core tasks required to build the MVP based on the Figma e
 
 ## Task 5: Shared Top-Bar Component
 
-- [ ] **5.1 Factory Dropdown**:
+- [x] **5.1 Factory Dropdown**:
   - Always visible across all 3 dashboard levels
   - Selecting a factory navigates to `/[factoryId]` (or resets to `/` when "All Factories" is chosen)
-- [ ] **5.2 Date Filter Toggle**:
+- [x] **5.2 Date Filter Toggle**:
   - Always visible: "Today" | "Yesterday" | "Last Week" toggle
 - [ ] **5.3 Line Dropdown Support**:
   - Conditionally visible when on the Line dashboard (`/[factoryId]/[lineId]`) to switch between lines
@@ -63,12 +63,12 @@ This plan tracks the 8 core tasks required to build the MVP based on the Figma e
 
 ## Task 6: All-Factories Dashboard (`/`)
 
-- [ ] **6.1 KPICard Component**:
+- [x] **6.1 KPICard Component**:
   - Factory name, actual speed, actual production, last hour cycle time, active lines ratio
   - 3 circular KPI rings (OEE, SLE, USLE)
   - Production volume and quality numbers
   - Clickable card navigating to `/[factoryId]`
-- [ ] **6.2 Factory Grid Layout**:
+- [x] **6.2 Factory Grid Layout**:
   - Responsive grid of factory KPICards
 - [ ] **6.3 Shared Right Panel**:
   - 3 trend line-charts (Cycle Time, Speed, Uptime)
@@ -83,7 +83,7 @@ This plan tracks the 8 core tasks required to build the MVP based on the Figma e
   - Visual breakdown: ON/OFF %, Quality Loss/Speed Loss %, and the 5 reasons (Breakdown, Cleansing process, Change over time, Idle, Minor stops)
 - [ ] **7.3 Timeline Component**:
   - Horizontal bar visualizing ON vs OFF time segments
-- [ ] **7.4 Right Panel**:
+- [x] **7.4 Right Panel**:
   - Shared 3 trend line-charts (Cycle Time, Speed, Uptime)
 
 ---

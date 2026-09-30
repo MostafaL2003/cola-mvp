@@ -1,12 +1,8 @@
-import {
-  FactoryData,
-  TimelineSegment,
-  TrendDataPoint,
-  MetricTrendPoint,
-} from "@/types/mes";
+import { FactoryData, TimelineSegment, TrendDataPoint } from "@/types/mes";
+import { generateTabbedMetrics } from "./helpers/metrics";
 
 // Shared 24-hour trend series for Cycle Time, Speed, and Uptime
-const sampleHourlyTrend: TrendDataPoint[] = [
+export const sampleHourlyTrend: TrendDataPoint[] = [
   { time: "06:00", cycleTime: 1.15, speed: 52000, uptime: 94.2 },
   { time: "08:00", cycleTime: 1.12, speed: 54500, uptime: 96.5 },
   { time: "10:00", cycleTime: 1.28, speed: 48200, uptime: 88.0 },
@@ -85,40 +81,6 @@ const sampleTimeline: TimelineSegment[] = [
   },
 ];
 
-const generateTabbedMetrics = (
-  baseOe: number,
-  baseMtbf: number,
-  baseUptime: number,
-) => ({
-  oe: [
-    { time: "Mon", value: baseOe - 2.5, target: 85 },
-    { time: "Tue", value: baseOe - 1.0, target: 85 },
-    { time: "Wed", value: baseOe + 1.2, target: 85 },
-    { time: "Thu", value: baseOe + 0.4, target: 85 },
-    { time: "Fri", value: baseOe + 2.1, target: 85 },
-    { time: "Sat", value: baseOe - 0.8, target: 85 },
-    { time: "Sun", value: baseOe + 1.5, target: 85 },
-  ],
-  mtbf: [
-    { time: "Mon", value: baseMtbf - 15, target: 180 },
-    { time: "Tue", value: baseMtbf - 8, target: 180 },
-    { time: "Wed", value: baseMtbf + 12, target: 180 },
-    { time: "Thu", value: baseMtbf + 5, target: 180 },
-    { time: "Fri", value: baseMtbf + 22, target: 180 },
-    { time: "Sat", value: baseMtbf - 2, target: 180 },
-    { time: "Sun", value: baseMtbf + 18, target: 180 },
-  ],
-  uptime: [
-    { time: "Mon", value: baseUptime - 1.8, target: 95 },
-    { time: "Tue", value: baseUptime - 0.5, target: 95 },
-    { time: "Wed", value: baseUptime + 1.0, target: 95 },
-    { time: "Thu", value: baseUptime + 0.2, target: 95 },
-    { time: "Fri", value: baseUptime + 1.8, target: 95 },
-    { time: "Sat", value: baseUptime - 0.4, target: 95 },
-    { time: "Sun", value: baseUptime + 1.1, target: 95 },
-  ],
-});
-
 export const factoriesData: FactoryData[] = [
   {
     id: "atlanta",
@@ -128,13 +90,34 @@ export const factoriesData: FactoryData[] = [
       factoryName: "Atlanta Bottling Complex",
       actualSpeed: 54200,
       actualProduction: 418500,
-      lastHourCycleTime: 1.12,
+      lastHourCycleTime: 1.95,
       activeLinesRatio: { active: 5, total: 6 },
       oee: 84.6,
       sle: 91.4,
       usle: 88.2,
       productionVolume: 1420000,
       productionQuality: 99.4,
+    },
+    totalProduction: {
+      bottles: 500000,
+      packs: 50000,
+      pallets: 10000,
+    },
+    performanceKpi: {
+      performance: 76,
+      quality: 94,
+    },
+    usageKpi: {
+      energy: {
+        perLiter: 420,
+        perBottle: 210,
+        unit: "J",
+      },
+      water: {
+        perLiter: 380,
+        perBottle: 190,
+        unit: "L",
+      },
     },
     lossTree: {
       onPercentage: 84.6,
@@ -150,7 +133,17 @@ export const factoriesData: FactoryData[] = [
       ],
     },
     timeline: sampleTimeline,
-    trendData: sampleHourlyTrend,
+    trendData: [
+      { time: "06:00", cycleTime: 1.75, speed: 52000, uptime: 92.5 },
+      { time: "08:00", cycleTime: 1.88, speed: 54500, uptime: 94.0 },
+      { time: "10:00", cycleTime: 2.55, speed: 46200, uptime: 81.5 },
+      { time: "12:00", cycleTime: 1.92, speed: 53800, uptime: 93.1 },
+      { time: "14:00", cycleTime: 1.58, speed: 57400, uptime: 96.2 },
+      { time: "16:00", cycleTime: 2.3, speed: 49100, uptime: 86.3 },
+      { time: "18:00", cycleTime: 1.85, speed: 55000, uptime: 94.8 },
+      { time: "20:00", cycleTime: 1.96, speed: 53200, uptime: 92.5 },
+      { time: "22:00", cycleTime: 1.78, speed: 54900, uptime: 94.2 },
+    ],
     lines: [
       {
         id: "line-1",
@@ -275,13 +268,34 @@ export const factoriesData: FactoryData[] = [
       factoryName: "Berlin Packaging Hub",
       actualSpeed: 61500,
       actualProduction: 495000,
-      lastHourCycleTime: 1.05,
+      lastHourCycleTime: 0.65,
       activeLinesRatio: { active: 4, total: 4 },
       oee: 89.1,
       sle: 94.6,
       usle: 92.3,
       productionVolume: 1680000,
       productionQuality: 99.8,
+    },
+    totalProduction: {
+      bottles: 720000,
+      packs: 72000,
+      pallets: 14400,
+    },
+    performanceKpi: {
+      performance: 88,
+      quality: 98,
+    },
+    usageKpi: {
+      energy: {
+        perLiter: 360,
+        perBottle: 180,
+        unit: "J",
+      },
+      water: {
+        perLiter: 310,
+        perBottle: 155,
+        unit: "L",
+      },
     },
     lossTree: {
       onPercentage: 89.1,
@@ -323,15 +337,15 @@ export const factoriesData: FactoryData[] = [
       },
     ],
     trendData: [
-      { time: "06:00", cycleTime: 1.08, speed: 59000, uptime: 96.0 },
-      { time: "08:00", cycleTime: 1.04, speed: 62000, uptime: 98.1 },
-      { time: "10:00", cycleTime: 1.03, speed: 63100, uptime: 98.5 },
-      { time: "12:00", cycleTime: 1.15, speed: 56000, uptime: 91.0 },
-      { time: "14:00", cycleTime: 1.05, speed: 61800, uptime: 97.4 },
-      { time: "16:00", cycleTime: 1.02, speed: 64000, uptime: 98.9 },
-      { time: "18:00", cycleTime: 1.04, speed: 62500, uptime: 97.8 },
-      { time: "20:00", cycleTime: 1.06, speed: 61200, uptime: 96.9 },
-      { time: "22:00", cycleTime: 1.05, speed: 62000, uptime: 97.5 },
+      { time: "06:00", cycleTime: 0.62, speed: 59000, uptime: 96.0 },
+      { time: "08:00", cycleTime: 0.58, speed: 62000, uptime: 98.1 },
+      { time: "10:00", cycleTime: 0.82, speed: 63100, uptime: 98.5 },
+      { time: "12:00", cycleTime: 0.64, speed: 56000, uptime: 91.0 },
+      { time: "14:00", cycleTime: 0.52, speed: 61800, uptime: 97.4 },
+      { time: "16:00", cycleTime: 0.74, speed: 64000, uptime: 98.9 },
+      { time: "18:00", cycleTime: 0.68, speed: 62500, uptime: 97.8 },
+      { time: "20:00", cycleTime: 0.55, speed: 61200, uptime: 96.9 },
+      { time: "22:00", cycleTime: 0.6, speed: 62000, uptime: 97.5 },
     ],
     lines: [
       {
@@ -388,13 +402,34 @@ export const factoriesData: FactoryData[] = [
       factoryName: "Tokyo Bottling Facility",
       actualSpeed: 48900,
       actualProduction: 372000,
-      lastHourCycleTime: 1.18,
+      lastHourCycleTime: 1.35,
       activeLinesRatio: { active: 3, total: 4 },
       oee: 81.3,
       sle: 87.5,
       usle: 84.1,
       productionVolume: 1250000,
       productionQuality: 99.1,
+    },
+    totalProduction: {
+      bottles: 380000,
+      packs: 38000,
+      pallets: 7600,
+    },
+    performanceKpi: {
+      performance: 65,
+      quality: 92,
+    },
+    usageKpi: {
+      energy: {
+        perLiter: 490,
+        perBottle: 245,
+        unit: "J",
+      },
+      water: {
+        perLiter: 460,
+        perBottle: 230,
+        unit: "L",
+      },
     },
     lossTree: {
       onPercentage: 81.3,
@@ -410,7 +445,17 @@ export const factoriesData: FactoryData[] = [
       ],
     },
     timeline: sampleTimeline,
-    trendData: sampleHourlyTrend,
+    trendData: [
+      { time: "06:00", cycleTime: 1.25, speed: 46000, uptime: 88.5 },
+      { time: "08:00", cycleTime: 1.12, speed: 51200, uptime: 93.0 },
+      { time: "10:00", cycleTime: 1.75, speed: 42100, uptime: 82.4 },
+      { time: "12:00", cycleTime: 1.38, speed: 49800, uptime: 91.2 },
+      { time: "14:00", cycleTime: 1.02, speed: 54000, uptime: 95.0 },
+      { time: "16:00", cycleTime: 1.55, speed: 43500, uptime: 85.8 },
+      { time: "18:00", cycleTime: 1.3, speed: 48200, uptime: 90.0 },
+      { time: "20:00", cycleTime: 1.18, speed: 50500, uptime: 92.5 },
+      { time: "22:00", cycleTime: 1.24, speed: 49100, uptime: 91.8 },
+    ],
     lines: [
       {
         id: "line-t1",
@@ -444,13 +489,34 @@ export const factoriesData: FactoryData[] = [
       factoryName: "London Thames Plant",
       actualSpeed: 45800,
       actualProduction: 348000,
-      lastHourCycleTime: 1.22,
+      lastHourCycleTime: 2.45,
       activeLinesRatio: { active: 4, total: 5 },
       oee: 79.8,
       sle: 86.1,
       usle: 82.5,
       productionVolume: 1180000,
       productionQuality: 98.9,
+    },
+    totalProduction: {
+      bottles: 440000,
+      packs: 44000,
+      pallets: 8800,
+    },
+    performanceKpi: {
+      performance: 58,
+      quality: 86,
+    },
+    usageKpi: {
+      energy: {
+        perLiter: 530,
+        perBottle: 265,
+        unit: "J",
+      },
+      water: {
+        perLiter: 510,
+        perBottle: 255,
+        unit: "L",
+      },
     },
     lossTree: {
       onPercentage: 79.8,
@@ -466,7 +532,17 @@ export const factoriesData: FactoryData[] = [
       ],
     },
     timeline: sampleTimeline,
-    trendData: sampleHourlyTrend,
+    trendData: [
+      { time: "06:00", cycleTime: 2.2, speed: 43200, uptime: 84.2 },
+      { time: "08:00", cycleTime: 2.5, speed: 45800, uptime: 88.0 },
+      { time: "10:00", cycleTime: 3.35, speed: 39500, uptime: 76.5 },
+      { time: "12:00", cycleTime: 2.42, speed: 46200, uptime: 89.1 },
+      { time: "14:00", cycleTime: 1.95, speed: 47900, uptime: 91.7 },
+      { time: "16:00", cycleTime: 2.9, speed: 42100, uptime: 82.0 },
+      { time: "18:00", cycleTime: 2.3, speed: 45800, uptime: 87.4 },
+      { time: "20:00", cycleTime: 2.55, speed: 44500, uptime: 86.6 },
+      { time: "22:00", cycleTime: 2.38, speed: 46000, uptime: 89.5 },
+    ],
     lines: [
       {
         id: "line-l1",
@@ -492,19 +568,358 @@ export const factoriesData: FactoryData[] = [
       },
     ],
   },
+  {
+    id: "mexico-city",
+    name: "Mexico City Plant",
+    location: "Mexico City, Mexico",
+    kpi: {
+      factoryName: "Mexico City Plant",
+      actualSpeed: 56400,
+      actualProduction: 435000,
+      lastHourCycleTime: 0.85,
+      activeLinesRatio: { active: 5, total: 6 },
+      oee: 86.2,
+      sle: 92.8,
+      usle: 89.6,
+      productionVolume: 1540000,
+      productionQuality: 99.6,
+    },
+    totalProduction: {
+      bottles: 850000,
+      packs: 85000,
+      pallets: 17000,
+    },
+    performanceKpi: {
+      performance: 84,
+      quality: 96,
+    },
+    usageKpi: {
+      energy: {
+        perLiter: 390,
+        perBottle: 195,
+        unit: "J",
+      },
+      water: {
+        perLiter: 340,
+        perBottle: 170,
+        unit: "L",
+      },
+    },
+    lossTree: {
+      onPercentage: 86.2,
+      offPercentage: 13.8,
+      qualityLossPercentage: 2.5,
+      speedLossPercentage: 5.4,
+      reasons: [
+        { name: "Breakdown", percentage: 3.8, durationMinutes: 55 },
+        { name: "Cleansing process", percentage: 3.2, durationMinutes: 46 },
+        { name: "Change over time", percentage: 3.0, durationMinutes: 43 },
+        { name: "Idle", percentage: 2.2, durationMinutes: 32 },
+        { name: "Minor stops", percentage: 1.6, durationMinutes: 23 },
+      ],
+    },
+    timeline: sampleTimeline,
+    trendData: [
+      { time: "06:00", cycleTime: 0.82, speed: 53800, uptime: 91.2 },
+      { time: "08:00", cycleTime: 0.75, speed: 57200, uptime: 95.8 },
+      { time: "10:00", cycleTime: 1.1, speed: 52400, uptime: 89.4 },
+      { time: "12:00", cycleTime: 0.86, speed: 58500, uptime: 96.9 },
+      { time: "14:00", cycleTime: 0.68, speed: 60100, uptime: 97.5 },
+      { time: "16:00", cycleTime: 0.98, speed: 55000, uptime: 93.2 },
+      { time: "18:00", cycleTime: 0.78, speed: 58600, uptime: 96.5 },
+      { time: "20:00", cycleTime: 0.84, speed: 56900, uptime: 95.1 },
+      { time: "22:00", cycleTime: 0.8, speed: 57600, uptime: 96.0 },
+    ],
+    lines: [
+      {
+        id: "line-m1",
+        factoryId: "mexico-city",
+        name: "Line 1 — 600ml Bottle",
+        type: "PET Bottling",
+        status: "running",
+        kpi: {
+          factoryName: "Line 1 — 600ml Bottle",
+          actualSpeed: 60000,
+          actualProduction: 115000,
+          lastHourCycleTime: 1.05,
+          activeLinesRatio: { active: 1, total: 1 },
+          oee: 87.5,
+          sle: 93.0,
+          usle: 90.2,
+          productionVolume: 420000,
+          productionQuality: 99.7,
+        },
+        timeline: sampleTimeline,
+        tabbedMetrics: generateTabbedMetrics(87.5, 185, 95.5),
+        trendData: sampleHourlyTrend,
+      },
+    ],
+  },
+  {
+    id: "sao-paulo",
+    name: "São Paulo Bottling Works",
+    location: "São Paulo, Brazil",
+    kpi: {
+      factoryName: "São Paulo Bottling Works",
+      actualSpeed: 51200,
+      actualProduction: 388000,
+      lastHourCycleTime: 1.55,
+      activeLinesRatio: { active: 4, total: 5 },
+      oee: 83.1,
+      sle: 89.9,
+      usle: 86.4,
+      productionVolume: 1310000,
+      productionQuality: 99.3,
+    },
+    totalProduction: {
+      bottles: 610000,
+      packs: 61000,
+      pallets: 12200,
+    },
+    performanceKpi: {
+      performance: 74,
+      quality: 91,
+    },
+    usageKpi: {
+      energy: {
+        perLiter: 440,
+        perBottle: 220,
+        unit: "J",
+      },
+      water: {
+        perLiter: 410,
+        perBottle: 205,
+        unit: "L",
+      },
+    },
+    lossTree: {
+      onPercentage: 83.1,
+      offPercentage: 16.9,
+      qualityLossPercentage: 3.6,
+      speedLossPercentage: 6.9,
+      reasons: [
+        { name: "Breakdown", percentage: 5.1, durationMinutes: 73 },
+        { name: "Cleansing process", percentage: 3.9, durationMinutes: 56 },
+        { name: "Change over time", percentage: 3.7, durationMinutes: 53 },
+        { name: "Idle", percentage: 2.6, durationMinutes: 37 },
+        { name: "Minor stops", percentage: 1.6, durationMinutes: 23 },
+      ],
+    },
+    timeline: sampleTimeline,
+    trendData: [
+      { time: "06:00", cycleTime: 1.4, speed: 48900, uptime: 88.0 },
+      { time: "08:00", cycleTime: 1.52, speed: 51800, uptime: 92.5 },
+      { time: "10:00", cycleTime: 2.1, speed: 44500, uptime: 83.3 },
+      { time: "12:00", cycleTime: 1.56, speed: 52400, uptime: 93.8 },
+      { time: "14:00", cycleTime: 1.24, speed: 54100, uptime: 95.4 },
+      { time: "16:00", cycleTime: 1.85, speed: 48000, uptime: 89.6 },
+      { time: "18:00", cycleTime: 1.48, speed: 51200, uptime: 92.1 },
+      { time: "20:00", cycleTime: 1.58, speed: 50200, uptime: 90.9 },
+      { time: "22:00", cycleTime: 1.44, speed: 52100, uptime: 93.0 },
+    ],
+    lines: [
+      {
+        id: "line-sp1",
+        factoryId: "sao-paulo",
+        name: "Line 1 — 350ml Sleek Can",
+        type: "Canning",
+        status: "running",
+        kpi: {
+          factoryName: "Line 1 — 350ml Sleek Can",
+          actualSpeed: 68000,
+          actualProduction: 130000,
+          lastHourCycleTime: 0.98,
+          activeLinesRatio: { active: 1, total: 1 },
+          oee: 85.0,
+          sle: 91.2,
+          usle: 88.0,
+          productionVolume: 410000,
+          productionQuality: 99.4,
+        },
+        timeline: sampleTimeline,
+        tabbedMetrics: generateTabbedMetrics(85.0, 175, 94.0),
+        trendData: sampleHourlyTrend,
+      },
+    ],
+  },
+  {
+    id: "madrid",
+    name: "Madrid Packaging Center",
+    location: "Madrid, Spain",
+    kpi: {
+      factoryName: "Madrid Packaging Center",
+      actualSpeed: 53800,
+      actualProduction: 402000,
+      lastHourCycleTime: 3.25,
+      activeLinesRatio: { active: 3, total: 4 },
+      oee: 85.4,
+      sle: 91.8,
+      usle: 88.9,
+      productionVolume: 1390000,
+      productionQuality: 99.5,
+    },
+    totalProduction: {
+      bottles: 320000,
+      packs: 32000,
+      pallets: 6400,
+    },
+    performanceKpi: {
+      performance: 80,
+      quality: 97,
+    },
+    usageKpi: {
+      energy: {
+        perLiter: 380,
+        perBottle: 190,
+        unit: "J",
+      },
+      water: {
+        perLiter: 320,
+        perBottle: 160,
+        unit: "L",
+      },
+    },
+    lossTree: {
+      onPercentage: 85.4,
+      offPercentage: 14.6,
+      qualityLossPercentage: 2.8,
+      speedLossPercentage: 5.9,
+      reasons: [
+        { name: "Breakdown", percentage: 4.2, durationMinutes: 60 },
+        { name: "Cleansing process", percentage: 3.4, durationMinutes: 49 },
+        { name: "Change over time", percentage: 3.1, durationMinutes: 45 },
+        { name: "Idle", percentage: 2.3, durationMinutes: 33 },
+        { name: "Minor stops", percentage: 1.6, durationMinutes: 23 },
+      ],
+    },
+    timeline: sampleTimeline,
+    trendData: [
+      { time: "06:00", cycleTime: 2.8, speed: 43500, uptime: 88.0 },
+      { time: "08:00", cycleTime: 3.2, speed: 45600, uptime: 91.2 },
+      { time: "10:00", cycleTime: 4.4, speed: 38900, uptime: 79.5 },
+      { time: "12:00", cycleTime: 3.25, speed: 46800, uptime: 92.8 },
+      { time: "14:00", cycleTime: 2.5, speed: 48200, uptime: 94.4 },
+      { time: "16:00", cycleTime: 3.95, speed: 41100, uptime: 83.3 },
+      { time: "18:00", cycleTime: 3.05, speed: 46400, uptime: 91.0 },
+      { time: "20:00", cycleTime: 3.4, speed: 44100, uptime: 88.7 },
+      { time: "22:00", cycleTime: 3.15, speed: 45000, uptime: 89.9 },
+    ],
+    lines: [
+      {
+        id: "line-m1",
+        factoryId: "madrid",
+        name: "Line 1 — 250ml Glass",
+        type: "Glass Bottling",
+        status: "running",
+        kpi: {
+          factoryName: "Line 1 — 250ml Glass",
+          actualSpeed: 46000,
+          actualProduction: 92000,
+          lastHourCycleTime: 1.22,
+          activeLinesRatio: { active: 1, total: 1 },
+          oee: 84.8,
+          sle: 91.0,
+          usle: 88.1,
+          productionVolume: 310000,
+          productionQuality: 99.6,
+        },
+        timeline: sampleTimeline,
+        tabbedMetrics: generateTabbedMetrics(84.8, 180, 94.8),
+        trendData: sampleHourlyTrend,
+      },
+    ],
+  },
+  {
+    id: "sydney",
+    name: "Sydney Beverage Hub",
+    location: "Sydney, Australia",
+    kpi: {
+      factoryName: "Sydney Beverage Hub",
+      actualSpeed: 49800,
+      actualProduction: 365000,
+      lastHourCycleTime: 1.05,
+      activeLinesRatio: { active: 4, total: 5 },
+      oee: 82.6,
+      sle: 88.7,
+      usle: 85.3,
+      productionVolume: 1220000,
+      productionQuality: 99.2,
+    },
+    totalProduction: {
+      bottles: 540000,
+      packs: 54000,
+      pallets: 10800,
+    },
+    performanceKpi: {
+      performance: 79,
+      quality: 93,
+    },
+    usageKpi: {
+      energy: {
+        perLiter: 410,
+        perBottle: 205,
+        unit: "J",
+      },
+      water: {
+        perLiter: 360,
+        perBottle: 180,
+        unit: "L",
+      },
+    },
+    lossTree: {
+      onPercentage: 82.6,
+      offPercentage: 17.4,
+      qualityLossPercentage: 3.9,
+      speedLossPercentage: 7.2,
+      reasons: [
+        { name: "Breakdown", percentage: 5.3, durationMinutes: 76 },
+        { name: "Cleansing process", percentage: 4.1, durationMinutes: 59 },
+        { name: "Change over time", percentage: 3.8, durationMinutes: 55 },
+        { name: "Idle", percentage: 2.7, durationMinutes: 39 },
+        { name: "Minor stops", percentage: 1.5, durationMinutes: 22 },
+      ],
+    },
+    timeline: sampleTimeline,
+    trendData: [
+      { time: "06:00", cycleTime: 0.98, speed: 47200, uptime: 87.5 },
+      { time: "08:00", cycleTime: 0.9, speed: 50400, uptime: 91.8 },
+      { time: "10:00", cycleTime: 1.35, speed: 44200, uptime: 82.0 },
+      { time: "12:00", cycleTime: 1.05, speed: 51200, uptime: 93.1 },
+      { time: "14:00", cycleTime: 0.85, speed: 53100, uptime: 94.6 },
+      { time: "16:00", cycleTime: 1.2, speed: 48900, uptime: 88.0 },
+      { time: "18:00", cycleTime: 0.98, speed: 51000, uptime: 92.8 },
+      { time: "20:00", cycleTime: 1.06, speed: 49900, uptime: 91.2 },
+      { time: "22:00", cycleTime: 0.94, speed: 52000, uptime: 93.5 },
+    ],
+    lines: [
+      {
+        id: "line-s1",
+        factoryId: "sydney",
+        name: "Line 1 — 375ml Can",
+        type: "Canning",
+        status: "running",
+        kpi: {
+          factoryName: "Line 1 — 375ml Can",
+          actualSpeed: 64000,
+          actualProduction: 122000,
+          lastHourCycleTime: 1.01,
+          activeLinesRatio: { active: 1, total: 1 },
+          oee: 83.9,
+          sle: 89.5,
+          usle: 86.0,
+          productionVolume: 380000,
+          productionQuality: 99.2,
+        },
+        timeline: sampleTimeline,
+        tabbedMetrics: generateTabbedMetrics(83.9, 168, 93.4),
+        trendData: sampleHourlyTrend,
+      },
+    ],
+  },
 ];
 
-// Helper functions for accessing mock data
-export function getAllFactories(): FactoryData[] {
-  return factoriesData;
-}
-
-export function getFactoryById(id: string): FactoryData | undefined {
-  return factoriesData.find((f) => f.id.toLowerCase() === id.toLowerCase());
-}
-
-export function getLineById(factoryId: string, lineId: string) {
-  const factory = getFactoryById(factoryId);
-  if (!factory) return undefined;
-  return factory.lines.find((l) => l.id.toLowerCase() === lineId.toLowerCase());
-}
+export {
+  getAllFactories,
+  getFactoryById,
+  getLineById,
+} from "./helpers/factory";

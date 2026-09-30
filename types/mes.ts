@@ -75,11 +75,34 @@ export interface LineData {
   trendData: TrendDataPoint[];
 }
 
+export interface TotalProductionData {
+  bottles: number;
+  packs: number;
+  pallets: number;
+}
+
+export interface UsageMetric {
+  perLiter: number;
+  perBottle: number;
+  unit: string;
+}
+
+export interface UsageKpiData {
+  energy: UsageMetric;
+  water: UsageMetric;
+}
+
 export interface FactoryData {
   id: string;
   name: string;
   location: string;
   kpi: KPICardData;
+  totalProduction?: TotalProductionData;
+  performanceKpi?: {
+    performance: number;
+    quality: number;
+  };
+  usageKpi?: UsageKpiData;
   lossTree: LossTreeData;
   timeline: TimelineSegment[];
   trendData: TrendDataPoint[];

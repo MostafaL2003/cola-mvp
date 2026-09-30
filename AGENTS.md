@@ -63,3 +63,4 @@ The sidebar links to Machines, Planning, Reports, and Settings. There are no des
 - **Icons**: Lucide React (`lucide-react`)
 - **Tailwind v4 theme**: Define font variables and brand colors inside `app/globals.css` using the `@theme` directive (do not create a legacy `tailwind.config.js`).
 - **Recharts SSR safety**: Always render Recharts inside `"use client"` components with a client-mounted guard to prevent React 19 hydration mismatches.
+- **Code comments**: Do not add unnecessary comments. Keep code clean, concise, and self-documenting without redundant comments or explanatory bloat.
