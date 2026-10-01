@@ -21,6 +21,7 @@ export interface TopBarProps {
 function TopBarContent({
   factories = [],
   currentFactoryId,
+  lines,
   currentLineId,
 }: TopBarProps) {
   const router = useRouter();
@@ -28,7 +29,9 @@ function TopBarContent({
   const searchParams = useSearchParams();
 
   const [factoryDropdownOpen, setFactoryDropdownOpen] = useState(false);
+  const [lineDropdownOpen, setLineDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const lineDropdownRef = useRef<HTMLDivElement>(null);
 
   const dateParam = searchParams.get("date");
   const activeDateFilter: "Today" | "Yesterday" | "Last Week" =
@@ -46,6 +49,12 @@ function TopBarContent({
       ) {
         setFactoryDropdownOpen(false);
       }
+      if (
+        lineDropdownRef.current &&
+        !lineDropdownRef.current.contains(event.target as Node)
+      ) {
+        setLineDropdownOpen(false);
+      }
     }
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
@@ -54,14 +63,31 @@ function TopBarContent({
   const currentFactory = factories.find((f) => f.id === currentFactoryId);
   const selectedLabel = currentFactory ? currentFactory.name : "All Factories";
 
+  const availableLines: LineData[] =
+    lines && lines.length > 0 ? lines : currentFactory?.lines || [];
+  const currentLine = availableLines.find((l) => l.id === currentLineId);
+  const lineSelectedLabel = currentLine ? currentLine.name : "Line Name";
+
   const handleSelectFactory = (factoryId?: string) => {
     setFactoryDropdownOpen(false);
+    setLineDropdownOpen(false);
     const params = searchParams.toString();
     const queryString = params ? `?${params}` : "";
     if (!factoryId) {
       router.push(`/${queryString}`);
     } else {
       router.push(`/${factoryId}${queryString}`);
+    }
+  };
+
+  const handleSelectLine = (lineId?: string) => {
+    setLineDropdownOpen(false);
+    const params = searchParams.toString();
+    const queryString = params ? `?${params}` : "";
+    if (!lineId) {
+      router.push(`/${currentFactoryId}${queryString}`);
+    } else {
+      router.push(`/${currentFactoryId}/${lineId}${queryString}`);
     }
   };
 
@@ -134,14 +160,83 @@ function TopBarContent({
           )}
         </div>
 
-        {currentLineId && (
-          <button
-            type="button"
-            aria-label="Filter configuration"
-            className="bg-brand-navy hover:bg-brand-navy/90 text-white p-2.5 rounded-lg shadow-sm transition-colors cursor-pointer flex items-center justify-center"
-          >
-            <SlidersHorizontal className="w-4 h-4 text-white" />
-          </button>
+        {currentFactoryId && (
+          <div className="relative" ref={lineDropdownRef}>
+            <button
+              type="button"
+              onClick={() => setLineDropdownOpen(!lineDropdownOpen)}
+              className={`px-3.5 py-2 rounded-lg flex items-center gap-2 text-sm font-montserrat font-medium shadow-sm transition-colors cursor-pointer ${
+                currentLineId
+                  ? "bg-brand-navy hover:bg-brand-navy/90 text-white"
+                  : "bg-white hover:bg-slate-50 text-slate-700 border border-slate-200/80"
+              }`}
+            >
+              <SlidersHorizontal
+                className={`w-4 h-4 shrink-0 ${
+                  currentLineId ? "text-white/90" : "text-slate-500"
+                }`}
+              />
+              <span className="truncate max-w-[150px] sm:max-w-[200px]">
+                {lineSelectedLabel}
+              </span>
+              <ChevronDown
+                className={`w-4 h-4 transition-transform duration-200 ${
+                  currentLineId ? "text-white/80" : "text-slate-400"
+                } ${lineDropdownOpen ? "rotate-180" : ""}`}
+              />
+            </button>
+
+            {lineDropdownOpen && (
+              <div className="absolute left-0 mt-1.5 w-64 bg-white rounded-xl shadow-xl border border-slate-100 py-1.5 z-50 animate-in fade-in slide-in-from-top-1 duration-150">
+                <button
+                  type="button"
+                  onClick={() => handleSelectLine(undefined)}
+                  className={`w-full text-left px-4 py-2.5 text-sm flex items-center justify-between hover:bg-slate-50 transition-colors cursor-pointer ${
+                    !currentLineId
+                      ? "font-semibold text-brand-navy bg-slate-50"
+                      : "text-slate-700"
+                  }`}
+                >
+                  <span>All Lines (Factory Overview)</span>
+                  {!currentLineId && (
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#F40009]" />
+                  )}
+                </button>
+                <div className="h-px bg-slate-100 my-1" />
+                {availableLines.map((line) => {
+                  const isSelected = line.id === currentLineId;
+                  return (
+                    <button
+                      key={line.id}
+                      type="button"
+                      onClick={() => handleSelectLine(line.id)}
+                      className={`w-full text-left px-4 py-2.5 text-sm flex items-center justify-between hover:bg-slate-50 transition-colors cursor-pointer ${
+                        isSelected
+                          ? "font-semibold text-brand-navy bg-slate-50"
+                          : "text-slate-700"
+                      }`}
+                    >
+                      <div className="flex items-center gap-2 truncate pr-2">
+                        <span
+                          className={`w-2 h-2 rounded-full shrink-0 ${
+                            line.status === "running"
+                              ? "bg-[#20C997]"
+                              : line.status === "downtime"
+                              ? "bg-[#F40009]"
+                              : "bg-[#CBD5E1]"
+                          }`}
+                        />
+                        <span className="truncate">{line.name}</span>
+                      </div>
+                      {isSelected && (
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#F40009] shrink-0" />
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          </div>
         )}
 
         <button

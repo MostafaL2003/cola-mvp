@@ -46,6 +46,15 @@ export interface TimelineSegment {
   reason?: string;
 }
 
+export interface TimelineStatistics {
+  uptimePercentage: number;
+  downtimePercentage: number;
+  scheduledDowntimePercentage: number;
+  uptimeMinutes?: number;
+  downtimeMinutes?: number;
+  scheduledDowntimeMinutes?: number;
+}
+
 export interface TrendDataPoint {
   time: string;
   cycleTime: number; // seconds
@@ -53,10 +62,50 @@ export interface TrendDataPoint {
   uptime: number; // percentage
 }
 
+export interface ActivityDataPoint {
+  id: string;
+  date: string;
+  time: string;
+  oee: number;
+  mtbf: number;
+  uptime: number;
+}
+
 export interface MetricTrendPoint {
   time: string;
   value: number;
   target?: number;
+}
+
+export interface LineProductionData {
+  ratePerHour: number;
+  rateUnit?: string;
+  actualProduction: number;
+  actualUnit?: string;
+  yieldPercentage: number;
+  yieldLabel?: string;
+}
+
+export interface LinePerformanceData {
+  oee: number;
+  availability: number;
+  performance: number;
+  quality: number;
+}
+
+export interface PowerMetricItem {
+  value: number | string;
+  unit?: string;
+  label: string;
+}
+
+export interface LinePowerData {
+  energyUsed?: number | string;
+  energyUnit?: string;
+  powerFactor?: number | string;
+  secondaryEnergyUsed?: number | string;
+  secondaryEnergyUnit?: string;
+  metrics?: PowerMetricItem[];
 }
 
 export interface LineData {
@@ -66,6 +115,9 @@ export interface LineData {
   type: string;
   status: "running" | "downtime" | "idle";
   kpi: KPICardData;
+  lineProduction?: LineProductionData;
+  linePerformance?: LinePerformanceData;
+  powerKpi?: LinePowerData;
   timeline: TimelineSegment[];
   tabbedMetrics: {
     oe: MetricTrendPoint[];
@@ -74,6 +126,7 @@ export interface LineData {
   };
   trendData: TrendDataPoint[];
 }
+
 
 export interface TotalProductionData {
   bottles: number;
@@ -105,6 +158,8 @@ export interface FactoryData {
   usageKpi?: UsageKpiData;
   lossTree: LossTreeData;
   timeline: TimelineSegment[];
+  timelineStats?: TimelineStatistics;
+  activityData?: ActivityDataPoint[];
   trendData: TrendDataPoint[];
   lines: LineData[];
 }

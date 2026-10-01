@@ -31,7 +31,11 @@ export default async function FactoryDetailPage({
 
   return (
     <div className="flex-1 flex flex-col min-h-full bg-slate-50">
-      <TopBar factories={factories} currentFactoryId={factory.id} />
+      <TopBar
+        factories={factories}
+        currentFactoryId={factory.id}
+        lines={factory.lines}
+      />
 
       <main className="p-4 sm:p-6 space-y-4">
         <h1 className="text-xl font-bold font-montserrat text-metric-label">
@@ -55,9 +59,9 @@ export default async function FactoryDetailPage({
               />
             </div>
 
-            <LossTreeCard />
+            <LossTreeCard factory={factory} />
 
-            <TimelineBar />
+            <TimelineBar factory={factory} />
           </div>
 
           <div className="lg:col-span-1">

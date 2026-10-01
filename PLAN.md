@@ -56,8 +56,8 @@ This plan tracks the 8 core tasks required to build the MVP based on the Figma e
   - Selecting a factory navigates to `/[factoryId]` (or resets to `/` when "All Factories" is chosen)
 - [x] **5.2 Date Filter Toggle**:
   - Always visible: "Today" | "Yesterday" | "Last Week" toggle
-- [ ] **5.3 Line Dropdown Support**:
-  - Conditionally visible when on the Line dashboard (`/[factoryId]/[lineId]`) to switch between lines
+- [x] **5.3 Line Dropdown Support**:
+  - Conditionally visible when viewing a factory or on the Line dashboard (`/[factoryId]/[lineId]`) to switch between lines
 
 ---
 
@@ -79,9 +79,9 @@ This plan tracks the 8 core tasks required to build the MVP based on the Figma e
 
 - [ ] **7.1 Large KPI Header**:
   - Expanded version of the factory's KPICard data
-- [ ] **7.2 Loss Tree Component**:
+- [x] **7.2 Loss Tree Component**:
   - Visual breakdown: ON/OFF %, Quality Loss/Speed Loss %, and the 5 reasons (Breakdown, Cleansing process, Change over time, Idle, Minor stops)
-- [ ] **7.3 Timeline Component**:
+- [x] **7.3 Timeline Component**:
   - Horizontal bar visualizing ON vs OFF time segments
 - [x] **7.4 Right Panel**:
   - Shared 3 trend line-charts (Cycle Time, Speed, Uptime)
@@ -90,11 +90,11 @@ This plan tracks the 8 core tasks required to build the MVP based on the Figma e
 
 ## Task 8: Line Detail Page (`/[factoryId]/[lineId]`)
 
-- [ ] **8.1 Top-Bar Line Dropdown**:
+- [x] **8.1 Top-Bar Line Dropdown**:
   - Line dropdown visible in the top-bar for switching lines
-- [ ] **8.2 Line KPIs & Layout**:
+- [x] **8.2 Line KPIs & Layout**:
   - Same visual pattern as Factory page, keeping the Timeline component
-- [ ] **8.3 Toggleable OE / MTBF / Uptime Chart**:
+- [x] **8.3 Toggleable OE / MTBF / Uptime Chart**:
   - Tabbed toggle switching between OE, MTBF, and Uptime views (replaces the Loss Tree)
-- [ ] **8.4 Right Panel**:
+- [x] **8.4 Right Panel**:
   - Shared 3 trend line-charts (Cycle Time, Speed, Uptime)
