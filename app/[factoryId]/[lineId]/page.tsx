@@ -3,13 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getAllFactories, getFactoryById, getLineById } from "@/lib/data";
 import TopBar from "@/components/TopBar";
-import LineProductionCard from "@/components/line/LineProductionCard";
-import LinePerformanceCard from "@/components/line/LinePerformanceCard";
-import LinePowerCard from "@/components/line/LinePowerCard";
-import CurrentActivityCard from "@/components/factory/CurrentActivityCard";
-import TimelineBar from "@/components/factory/TimelineBar";
-import CycleTimePanel from "@/components/factory/CycleTimePanel";
-import { FactoryData } from "@/types/mes";
+import LineLiveDashboard from "@/components/line/LineLiveDashboard";
 
 export function generateStaticParams() {
   const factories = getAllFactories();
@@ -41,14 +35,6 @@ export default async function LineDetailPage({
   }
 
   const factories = getAllFactories();
-
-  const lineAsFactory: FactoryData = {
-    ...factory,
-    name: line.name,
-    kpi: line.kpi,
-    timeline: line.timeline,
-    trendData: line.trendData,
-  };
 
   return (
     <div className="flex-1 flex flex-col min-h-full bg-slate-50">
@@ -97,42 +83,8 @@ export default async function LineDetailPage({
           </div>
         </div>
 
-        {/* 2-Column Grid Layout matching Factory page */}
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
-          {/* Main Left Column (3/4 width) */}
-          <div className="lg:col-span-3 space-y-4">
-            {/* Top Row: KPI Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-12 gap-4">
-              <LineProductionCard
-                line={line}
-                className="col-span-12 sm:col-span-6 xl:col-span-3 order-1"
-              />
-              <LinePerformanceCard
-                line={line}
-                className="col-span-12 xl:col-span-6 order-2 sm:order-3 xl:order-2"
-              />
-              <LinePowerCard
-                line={line}
-                className="col-span-12 sm:col-span-6 xl:col-span-3 order-3 sm:order-2 xl:order-3"
-              />
-            </div>
-
-            {/* Middle Row: Current Activity Card (Toggleable OEE / MTBF / UPTIME Chart) */}
-            <CurrentActivityCard factory={lineAsFactory} />
-
-            {/* Bottom Row: Timeline Bar */}
-            <TimelineBar
-              factory={factory}
-              timeline={line.timeline}
-              lineName={line.name}
-            />
-          </div>
-
-          {/* Right Column: Shared Trend Panel (1/4 width) */}
-          <div className="lg:col-span-1">
-            <CycleTimePanel factory={lineAsFactory} />
-          </div>
-        </div>
+        {/* Live Telemetry Dashboard */}
+        <LineLiveDashboard factory={factory} line={line} />
       </main>
     </div>
   );

@@ -1,8 +1,7 @@
-import React from "react";
 import { getAllFactories } from "@/lib/data";
-import FactoryCard from "@/components/FactoryCard";
 import TopBar from "@/components/TopBar";
 import ViewToggle from "@/components/ViewToggle";
+import FactoryGridClient from "@/components/FactoryGridClient";
 
 export default function DashboardPage() {
   const factories = getAllFactories();
@@ -22,17 +21,7 @@ export default function DashboardPage() {
           <ViewToggle />
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 xl:gap-6">
-          {factories.map((factory) => (
-            <FactoryCard
-              key={factory.id}
-              id={factory.id}
-              name={factory.name}
-              kpi={factory.kpi}
-              href={`/${factory.id}`}
-            />
-          ))}
-        </div>
+        <FactoryGridClient initialFactories={factories} />
       </main>
     </div>
   );
