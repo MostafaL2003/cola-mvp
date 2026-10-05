@@ -71,8 +71,26 @@ function TopBarContent({
   const handleSelectFactory = (factoryId?: string) => {
     setFactoryDropdownOpen(false);
     setLineDropdownOpen(false);
-    const params = searchParams.toString();
-    const queryString = params ? `?${params}` : "";
+    const params = new URLSearchParams(searchParams.toString());
+    if (pathname.startsWith("/machines")) {
+      if (factoryId) {
+        params.set("factoryId", factoryId);
+        const targetFactory = factories.find((f) => f.id === factoryId);
+        if (targetFactory && targetFactory.lines.length > 0) {
+          params.set("lineId", targetFactory.lines[0].id);
+        } else {
+          params.delete("lineId");
+        }
+      } else {
+        params.delete("factoryId");
+        params.delete("lineId");
+      }
+      const qs = params.toString() ? `?${params.toString()}` : "";
+      router.push(`/machines${qs}`);
+      return;
+    }
+
+    const queryString = params.toString() ? `?${params.toString()}` : "";
     if (!factoryId) {
       router.push(`/${queryString}`);
     } else {
@@ -82,8 +100,19 @@ function TopBarContent({
 
   const handleSelectLine = (lineId?: string) => {
     setLineDropdownOpen(false);
-    const params = searchParams.toString();
-    const queryString = params ? `?${params}` : "";
+    const params = new URLSearchParams(searchParams.toString());
+    if (pathname.startsWith("/machines")) {
+      if (lineId) {
+        params.set("lineId", lineId);
+      } else {
+        params.delete("lineId");
+      }
+      const qs = params.toString() ? `?${params.toString()}` : "";
+      router.push(`/machines${qs}`);
+      return;
+    }
+
+    const queryString = params.toString() ? `?${params.toString()}` : "";
     if (!lineId) {
       router.push(`/${currentFactoryId}${queryString}`);
     } else {

@@ -24,6 +24,12 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 Keep pages as Server Components by default. If a page needs client-side interactivity (onClick, useState, dropdowns, toggles), do NOT add "use client" to the whole page file. Instead, extract just the interactive piece into its own small component in `components/`, and mark only that small component "use client". The page itself imports and renders it, staying a Server Component.
 
+### Component & Import Architecture Rules
+
+- **NO BARREL FILES:** Never create `index.ts` or `index.tsx` files just to re-export components.
+- **DIRECT IMPORTS ONLY:** Always import components directly from their specific file paths (e.g., `@/components/machines/MachineCard`).
+- **COLOCATION:** Each component must live in its own clearly named file with its types or styles colocated directly.
+
 ### Task workflow
 
 - At the start of every task, read both `AGENTS.md` and `PLAN.md` before making changes.

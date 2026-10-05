@@ -17,7 +17,9 @@ export interface UseLiveTelemetryReturn {
  * Stores dynamic cycleTime, bph (production rate), and activityTrend points in local state.
  * Fluctuate values by +/- 1-2% every 3 seconds and shifts chart points.
  */
-export function useLiveTelemetry(initialLine: LineData): UseLiveTelemetryReturn {
+export function useLiveTelemetry(
+  initialLine: LineData,
+): UseLiveTelemetryReturn {
   const initialCycleTime = useMemo(() => {
     return initialLine.kpi.lastHourCycleTime ?? 1.08;
   }, [initialLine.kpi.lastHourCycleTime]);
@@ -36,7 +38,8 @@ export function useLiveTelemetry(initialLine: LineData): UseLiveTelemetryReturn 
 
   const [cycleTime, setCycleTime] = useState<number>(initialCycleTime);
   const [bph, setBph] = useState<number>(initialBph);
-  const [activityTrend, setActivityTrend] = useState<ActivityDataPoint[]>(initialTrend);
+  const [activityTrend, setActivityTrend] =
+    useState<ActivityDataPoint[]>(initialTrend);
   const [trendData, setTrendData] = useState<TrendDataPoint[]>(() => {
     return initialLine.trendData || sampleHourlyTrend;
   });
@@ -46,8 +49,8 @@ export function useLiveTelemetry(initialLine: LineData): UseLiveTelemetryReturn 
     setCycleTime(initialLine.kpi.lastHourCycleTime ?? 1.08);
     setBph(
       initialLine.lineProduction?.ratePerHour ??
-      initialLine.kpi.actualSpeed ??
-      5000
+        initialLine.kpi.actualSpeed ??
+        5000,
     );
     setTrendData(initialLine.trendData || sampleHourlyTrend);
   }, [initialLine]);
@@ -86,12 +89,12 @@ export function useLiveTelemetry(initialLine: LineData): UseLiveTelemetryReturn 
 
         const nextOee = Math.min(
           99.9,
-          Math.max(40, Math.round(last.oee * (1 + jitterOee) * 10) / 10)
+          Math.max(40, Math.round(last.oee * (1 + jitterOee) * 10) / 10),
         );
         const nextMtbf = Math.max(50, Math.round(last.mtbf * (1 + jitterMtbf)));
         const nextUptime = Math.min(
           100,
-          Math.max(40, Math.round(last.uptime * (1 + jitterUptime) * 10) / 10)
+          Math.max(40, Math.round(last.uptime * (1 + jitterUptime) * 10) / 10),
         );
 
         // Advance time label
@@ -122,11 +125,14 @@ export function useLiveTelemetry(initialLine: LineData): UseLiveTelemetryReturn 
         const last = prev[prev.length - 1];
         const jitter = getJitter();
 
-        const nextCycle = Math.round(Math.max(0.5, last.cycleTime * (1 + jitter)) * 100) / 100;
-        const nextSpeed = Math.round(Math.max(10000, last.speed * (1 + jitter)));
+        const nextCycle =
+          Math.round(Math.max(0.5, last.cycleTime * (1 + jitter)) * 100) / 100;
+        const nextSpeed = Math.round(
+          Math.max(10000, last.speed * (1 + jitter)),
+        );
         const nextUptime = Math.min(
           100,
-          Math.max(50, Math.round(last.uptime * (1 + jitter) * 10) / 10)
+          Math.max(50, Math.round(last.uptime * (1 + jitter) * 10) / 10),
         );
 
         const [hoursStr, minsStr] = (last.time || "00:00").split(":");

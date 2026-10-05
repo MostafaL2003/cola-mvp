@@ -1,6 +1,7 @@
 import {
   ActivityDataPoint,
   FactoryData,
+  MachineData,
   TimelineSegment,
   TrendDataPoint,
 } from "@/types/mes";
@@ -1332,6 +1333,282 @@ export const factoriesData: FactoryData[] = [
     ],
   },
 ];
+
+export function generateMachinesForLine(line: {
+  id: string;
+  name: string;
+  type: string;
+  status: "running" | "downtime" | "idle";
+  kpi?: { actualSpeed?: number; lastHourCycleTime?: number };
+}): MachineData[] {
+  const isCanning = line.type.toLowerCase().includes("can");
+  const isGlass = line.type.toLowerCase().includes("glass");
+  const speedUnit = isCanning ? "cph" : "BPM";
+  const baseSpeed = line.kpi?.actualSpeed ? Math.round(line.kpi.actualSpeed / 1) : 54000;
+  const baseCycle = line.kpi?.lastHourCycleTime || 1.08;
+  const isDowntime = line.status === "downtime";
+
+  if (isCanning) {
+    return [
+      {
+        id: `${line.id}-m1`,
+        name: "Can Depalletizer & Infeed",
+        subtitle: "Infeed & Ionized Air Rinse",
+        status: isDowntime ? "idle" : "running",
+        vitals: {
+          speed: { value: Math.round(baseSpeed * 0.98), unit: speedUnit },
+          cycleTime: { value: +(baseCycle * 0.96).toFixed(2), unit: "sec" },
+          operatingTemp: { value: 21.5, unit: "°C" },
+          pressure: { value: 5.5, unit: "bar" },
+          telemetryStatus: isDowntime ? "Standby: Infeed paused" : "Live stream nominal (100ms)",
+        },
+        maintenance: {
+          motorVibration: { value: 1.15, unit: "mm/s" },
+          oilFluidLevel: { value: 94, unit: "%" },
+          lastServiceDate: "12 Sep 2026",
+          healthScore: { value: 97, unit: "%" },
+          nextScheduledMaintenance: "In 72h (Shift A)",
+        },
+      },
+      {
+        id: `${line.id}-m2`,
+        name: "Rotary Can Filler & Seamer",
+        subtitle: "Isobaric Filling & Chuck Seaming",
+        status: isDowntime ? "downtime" : "running",
+        vitals: {
+          speed: { value: isDowntime ? 0 : baseSpeed, unit: speedUnit },
+          cycleTime: { value: +(baseCycle * 1.02).toFixed(2), unit: "sec" },
+          operatingTemp: { value: 3.8, unit: "°C" },
+          pressure: { value: isDowntime ? 1.2 : 4.8, unit: "bar" },
+          telemetryStatus: isDowntime ? "Fault: Seamer chuck sensor alert" : "Isobaric counter-pressure locked",
+        },
+        maintenance: {
+          motorVibration: { value: isDowntime ? 3.42 : 1.75, unit: "mm/s" },
+          oilFluidLevel: { value: 85, unit: "%" },
+          lastServiceDate: "25 Sep 2026",
+          healthScore: { value: isDowntime ? 72 : 92, unit: "%" },
+          nextScheduledMaintenance: isDowntime ? "Immediate attention required" : "In 36h (Shift C)",
+        },
+      },
+      {
+        id: `${line.id}-m3`,
+        name: "Can Warmer & Coding Station",
+        subtitle: "Condensation Heat & Date Coding",
+        status: isDowntime ? "idle" : "running",
+        vitals: {
+          speed: { value: Math.round(baseSpeed * 0.99), unit: speedUnit },
+          cycleTime: { value: +baseCycle.toFixed(2), unit: "sec" },
+          operatingTemp: { value: 33.2, unit: "°C" },
+          pressure: { value: 2.8, unit: "bar" },
+          telemetryStatus: "Vision inspection 100% pass",
+        },
+        maintenance: {
+          motorVibration: { value: 0.92, unit: "mm/s" },
+          oilFluidLevel: { value: 96, unit: "%" },
+          lastServiceDate: "05 Sep 2026",
+          healthScore: { value: 98, unit: "%" },
+          nextScheduledMaintenance: "In 120h (Shift B)",
+        },
+      },
+      {
+        id: `${line.id}-m4`,
+        name: "Shrink Packer & Palletizer",
+        subtitle: "Secondary Wrap & Robotic Stack",
+        status: isDowntime ? "idle" : "running",
+        vitals: {
+          speed: { value: Math.round(baseSpeed * 0.95), unit: speedUnit },
+          cycleTime: { value: +(baseCycle * 1.06).toFixed(2), unit: "sec" },
+          operatingTemp: { value: 26.5, unit: "°C" },
+          pressure: { value: 6.0, unit: "bar" },
+          telemetryStatus: "Pallet hoist synchronized",
+        },
+        maintenance: {
+          motorVibration: { value: 1.88, unit: "mm/s" },
+          oilFluidLevel: { value: 82, unit: "%" },
+          lastServiceDate: "19 Sep 2026",
+          healthScore: { value: 89, unit: "%" },
+          nextScheduledMaintenance: "In 24h (Shift B)",
+        },
+      },
+    ];
+  }
+
+  if (isGlass) {
+    return [
+      {
+        id: `${line.id}-m1`,
+        name: "De-crater & Bottle Washer",
+        subtitle: "Caustic Bath & Jet Rinse",
+        status: isDowntime ? "idle" : "running",
+        vitals: {
+          speed: { value: Math.round(baseSpeed * 0.97), unit: "BPM" },
+          cycleTime: { value: +(baseCycle * 1.04).toFixed(2), unit: "sec" },
+          operatingTemp: { value: 74.5, unit: "°C" },
+          pressure: { value: 4.5, unit: "bar" },
+          telemetryStatus: "Caustic solution temp nominal",
+        },
+        maintenance: {
+          motorVibration: { value: 1.62, unit: "mm/s" },
+          oilFluidLevel: { value: 88, unit: "%" },
+          lastServiceDate: "15 Sep 2026",
+          healthScore: { value: 93, unit: "%" },
+          nextScheduledMaintenance: "In 48h (Shift B)",
+        },
+      },
+      {
+        id: `${line.id}-m2`,
+        name: "Crown Cork Rinser & Filler",
+        subtitle: "Isobaric Filling & Crown Capping",
+        status: isDowntime ? "downtime" : "running",
+        vitals: {
+          speed: { value: isDowntime ? 0 : baseSpeed, unit: "BPM" },
+          cycleTime: { value: +(baseCycle * 1.05).toFixed(2), unit: "sec" },
+          operatingTemp: { value: 4.5, unit: "°C" },
+          pressure: { value: isDowntime ? 1.0 : 4.2, unit: "bar" },
+          telemetryStatus: isDowntime ? "Stop: Crown feeder jam" : "Crown crimp torque verified",
+        },
+        maintenance: {
+          motorVibration: { value: isDowntime ? 3.1 : 1.45, unit: "mm/s" },
+          oilFluidLevel: { value: 89, unit: "%" },
+          lastServiceDate: "29 Sep 2026",
+          healthScore: { value: isDowntime ? 75 : 94, unit: "%" },
+          nextScheduledMaintenance: isDowntime ? "Inspection in progress" : "In 60h (Shift A)",
+        },
+      },
+      {
+        id: `${line.id}-m3`,
+        name: "Cold-Glue Body & Neck Labeler",
+        subtitle: "Dual-Station Precision Application",
+        status: isDowntime ? "idle" : "running",
+        vitals: {
+          speed: { value: Math.round(baseSpeed * 0.98), unit: "BPM" },
+          cycleTime: { value: +(baseCycle * 1.02).toFixed(2), unit: "sec" },
+          operatingTemp: { value: 23.8, unit: "°C" },
+          pressure: { value: 3.5, unit: "bar" },
+          telemetryStatus: "Glue viscosity nominal (450 mPa·s)",
+        },
+        maintenance: {
+          motorVibration: { value: 1.18, unit: "mm/s" },
+          oilFluidLevel: { value: 92, unit: "%" },
+          lastServiceDate: "18 Sep 2026",
+          healthScore: { value: 96, unit: "%" },
+          nextScheduledMaintenance: "In 84h (Shift C)",
+        },
+      },
+      {
+        id: `${line.id}-m4`,
+        name: "Crate Packer & Palletizer",
+        subtitle: "Layer Gripper & Pallet Wrapping",
+        status: isDowntime ? "idle" : "running",
+        vitals: {
+          speed: { value: Math.round(baseSpeed * 0.96), unit: "BPM" },
+          cycleTime: { value: +(baseCycle * 1.08).toFixed(2), unit: "sec" },
+          operatingTemp: { value: 22.8, unit: "°C" },
+          pressure: { value: 6.4, unit: "bar" },
+          telemetryStatus: "Layer gripper pneumatics active",
+        },
+        maintenance: {
+          motorVibration: { value: 2.25, unit: "mm/s" },
+          oilFluidLevel: { value: 80, unit: "%" },
+          lastServiceDate: "10 Sep 2026",
+          healthScore: { value: 87, unit: "%" },
+          nextScheduledMaintenance: "In 18h (Shift A)",
+        },
+      },
+    ];
+  }
+
+  // Standard PET Bottling (Default)
+  return [
+    {
+      id: `${line.id}-m1`,
+      name: "Depalletizer & Infeed Table",
+      subtitle: "Automatic Sweep & Air Conveyor",
+      status: isDowntime ? "idle" : "running",
+      vitals: {
+        speed: { value: Math.round(baseSpeed * 0.99), unit: "BPM" },
+        cycleTime: { value: +(baseCycle * 0.98).toFixed(2), unit: "sec" },
+        operatingTemp: { value: 20.8, unit: "°C" },
+        pressure: { value: 5.6, unit: "bar" },
+        telemetryStatus: "Infeed optical buffer 85%",
+      },
+      maintenance: {
+        motorVibration: { value: 1.12, unit: "mm/s" },
+        oilFluidLevel: { value: 94, unit: "%" },
+        lastServiceDate: "14 Sep 2026",
+        healthScore: { value: 98, unit: "%" },
+        nextScheduledMaintenance: "In 72h (Shift A)",
+      },
+    },
+    {
+      id: `${line.id}-m2`,
+      name: "Rotary Rinser & Filler",
+      subtitle: "Tri-Block Rinser, Filler & Capper",
+      status: isDowntime ? "downtime" : "running",
+      vitals: {
+        speed: { value: isDowntime ? 0 : baseSpeed, unit: "BPM" },
+        cycleTime: { value: +baseCycle.toFixed(2), unit: "sec" },
+        operatingTemp: { value: 4.2, unit: "°C" },
+        pressure: { value: isDowntime ? 1.1 : 4.6, unit: "bar" },
+        telemetryStatus: isDowntime ? "Warning: Filling valve offline" : "Filling valves synchronized (120/120)",
+      },
+      maintenance: {
+        motorVibration: { value: isDowntime ? 3.85 : 1.48, unit: "mm/s" },
+        oilFluidLevel: { value: 88, unit: "%" },
+        lastServiceDate: "02 Oct 2026",
+        healthScore: { value: isDowntime ? 70 : 94, unit: "%" },
+        nextScheduledMaintenance: isDowntime ? "Technician dispatched" : "In 48h (Shift C)",
+      },
+    },
+    {
+      id: `${line.id}-m3`,
+      name: "High-Speed Sleeve Labeler",
+      subtitle: "Rotary Sleeve Applicator & Tunnel",
+      status: isDowntime ? "idle" : "running",
+      vitals: {
+        speed: { value: Math.round(baseSpeed * 0.98), unit: "BPM" },
+        cycleTime: { value: +(baseCycle * 1.01).toFixed(2), unit: "sec" },
+        operatingTemp: { value: 68.4, unit: "°C" },
+        pressure: { value: 3.2, unit: "bar" },
+        telemetryStatus: "Steam heat tunnel stable (68°C)",
+      },
+      maintenance: {
+        motorVibration: { value: 0.95, unit: "mm/s" },
+        oilFluidLevel: { value: 91, unit: "%" },
+        lastServiceDate: "20 Aug 2026",
+        healthScore: { value: 96, unit: "%" },
+        nextScheduledMaintenance: "In 96h (Shift B)",
+      },
+    },
+    {
+      id: `${line.id}-m4`,
+      name: "Case Packer & Palletizer",
+      subtitle: "Continuous Packer & Stretch Wrapper",
+      status: isDowntime ? "idle" : "running",
+      vitals: {
+        speed: { value: Math.round(baseSpeed * 0.96), unit: "BPM" },
+        cycleTime: { value: +(baseCycle * 1.05).toFixed(2), unit: "sec" },
+        operatingTemp: { value: 24.2, unit: "°C" },
+        pressure: { value: 6.2, unit: "bar" },
+        telemetryStatus: "Servo axis 1-4 position nominal",
+      },
+      maintenance: {
+        motorVibration: { value: 2.15, unit: "mm/s" },
+        oilFluidLevel: { value: 82, unit: "%" },
+        lastServiceDate: "28 Sep 2026",
+        healthScore: { value: 89, unit: "%" },
+        nextScheduledMaintenance: "In 24h (Shift B)",
+      },
+    },
+  ];
+}
+
+// Populate mock machines for every line in all factories
+for (const factory of factoriesData) {
+  for (const line of factory.lines) {
+    line.machines = generateMachinesForLine(line);
+  }
+}
 
 export {
   getAllFactories,

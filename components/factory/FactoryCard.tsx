@@ -8,7 +8,7 @@ import {
   BarChart3,
   Award,
 } from "lucide-react";
-import CircularProgressBar from "./CircularProgressBar";
+import CircularProgressBar from "@/components/CircularProgressBar";
 import { KPICardData } from "@/types/mes";
 import { formatActiveLinesRatio, formatQualityDisplay } from "@/helpers";
 

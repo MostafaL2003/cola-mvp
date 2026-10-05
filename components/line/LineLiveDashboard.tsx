@@ -7,6 +7,7 @@ import LinePowerCard from "./LinePowerCard";
 import CurrentActivityCard from "@/components/factory/CurrentActivityCard";
 import TimelineBar from "@/components/factory/TimelineBar";
 import CycleTimePanel from "@/components/factory/CycleTimePanel";
+import MachineGrid from "@/components/machines/MachineGrid";
 import { FactoryData, LineData } from "@/types/mes";
 import { useLiveTelemetry } from "@/hooks/useLiveTelemetry";
 
@@ -64,6 +65,19 @@ export default function LineLiveDashboard({
           timeline={line.timeline}
           lineName={line.name}
         />
+
+        {/* Machine Vitals & Diagnostics Grid */}
+        <div className="space-y-3 pt-2">
+          <div className="flex items-center justify-between">
+            <h2 className="text-sm font-bold font-montserrat text-slate-800">
+              Line Machines &amp; Diagnostics
+            </h2>
+            <span className="text-xs font-roboto text-slate-500">
+              4 Units Monitored
+            </span>
+          </div>
+          <MachineGrid machines={telemetryLine.machines || line.machines} />
+        </div>
       </div>
 
       {/* Right Column: Shared Trend Panel (1/4 width) */}

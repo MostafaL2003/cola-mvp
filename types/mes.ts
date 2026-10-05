@@ -108,6 +108,52 @@ export interface LinePowerData {
   metrics?: PowerMetricItem[];
 }
 
+export interface MachineOperationalVitals {
+  speed: {
+    value: number;
+    unit: string;
+  };
+  cycleTime: {
+    value: number;
+    unit: string;
+  };
+  operatingTemp: {
+    value: number;
+    unit: string;
+  };
+  pressure: {
+    value: number;
+    unit: string;
+  };
+  telemetryStatus: string;
+}
+
+export interface MachineDiagnosticsMaintenance {
+  motorVibration: {
+    value: number;
+    unit: string;
+  };
+  oilFluidLevel: {
+    value: number;
+    unit: string;
+  };
+  lastServiceDate: string;
+  healthScore: {
+    value: number;
+    unit: string;
+  };
+  nextScheduledMaintenance: string;
+}
+
+export interface MachineData {
+  id: string | number;
+  name: string;
+  subtitle?: string;
+  status: "running" | "downtime" | "idle";
+  vitals: MachineOperationalVitals;
+  maintenance: MachineDiagnosticsMaintenance;
+}
+
 export interface LineData {
   id: string;
   factoryId: string;
@@ -118,6 +164,7 @@ export interface LineData {
   lineProduction?: LineProductionData;
   linePerformance?: LinePerformanceData;
   powerKpi?: LinePowerData;
+  machines?: MachineData[];
   timeline: TimelineSegment[];
   tabbedMetrics: {
     oe: MetricTrendPoint[];

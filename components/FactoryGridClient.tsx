@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import FactoryCard from "@/components/FactoryCard";
+import FactoryCard from "@/components/factory/FactoryCard";
 import { FactoryData } from "@/types/mes";
 import { useAllFactoriesLiveTelemetry } from "@/hooks/useAllFactoriesLiveTelemetry";
 
