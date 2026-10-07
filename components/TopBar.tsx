@@ -72,7 +72,7 @@ function TopBarContent({
     setFactoryDropdownOpen(false);
     setLineDropdownOpen(false);
     const params = new URLSearchParams(searchParams.toString());
-    if (pathname.startsWith("/machines")) {
+    if (pathname.startsWith("/machines") || pathname.startsWith("/planning")) {
       if (factoryId) {
         params.set("factoryId", factoryId);
         const targetFactory = factories.find((f) => f.id === factoryId);
@@ -86,7 +86,7 @@ function TopBarContent({
         params.delete("lineId");
       }
       const qs = params.toString() ? `?${params.toString()}` : "";
-      router.push(`/machines${qs}`);
+      router.push(`${pathname}${qs}`);
       return;
     }
 
@@ -101,14 +101,14 @@ function TopBarContent({
   const handleSelectLine = (lineId?: string) => {
     setLineDropdownOpen(false);
     const params = new URLSearchParams(searchParams.toString());
-    if (pathname.startsWith("/machines")) {
+    if (pathname.startsWith("/machines") || pathname.startsWith("/planning")) {
       if (lineId) {
         params.set("lineId", lineId);
       } else {
         params.delete("lineId");
       }
       const qs = params.toString() ? `?${params.toString()}` : "";
-      router.push(`/machines${qs}`);
+      router.push(`${pathname}${qs}`);
       return;
     }
 

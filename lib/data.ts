@@ -1,9 +1,12 @@
 import {
   ActivityDataPoint,
   FactoryData,
+  LineData,
   MachineData,
+  Shift,
   TimelineSegment,
   TrendDataPoint,
+  WorkOrder,
 } from "@/types/mes";
 import { generateTabbedMetrics } from "./helpers/metrics";
 
@@ -1603,11 +1606,319 @@ export function generateMachinesForLine(line: {
   ];
 }
 
-// Populate mock machines for every line in all factories
+export const berlinLineAShifts: Shift[] = [
+  {
+    id: "shift-a",
+    name: "Shift A",
+    timeWindow: "06:00 - 14:00",
+    sku: "Coca-Cola Original 330ml Can",
+    packageType: "330ml Euro Can",
+    producedUnits: 400000,
+    targetUnits: 400000,
+    percentage: 100,
+    status: "COMPLETED",
+    lineLead: "M. Weber",
+  },
+  {
+    id: "shift-b",
+    name: "Shift B",
+    timeWindow: "14:00 - 22:00",
+    isActiveShift: true,
+    sku: "Coca-Cola Zero Sugar 330ml Can",
+    packageType: "330ml Euro Can",
+    producedUnits: 238000,
+    targetUnits: 350000,
+    percentage: 68,
+    status: "RUNNING",
+    lineLead: "K. Fischer",
+  },
+  {
+    id: "shift-c",
+    name: "Shift C",
+    timeWindow: "22:00 - 06:00",
+    sku: "Sprite Lemon-Lime 330ml Can",
+    packageType: "330ml Euro Can",
+    producedUnits: 0,
+    targetUnits: 300000,
+    percentage: 0,
+    status: "QUEUED",
+    lineLead: "S. Richter",
+  },
+];
+
+export const berlinLineAWorkOrders: WorkOrder[] = [
+  {
+    id: "#WO-9021",
+    productSku: "Coca-Cola Original 330ml Can",
+    format: "330ml Euro Can",
+    plannedTarget: 400000,
+    timeWindow: "06:00 - 14:00 (Today)",
+    lineSequence: ["Infeed", "Filler", "Pack"],
+    status: "COMPLETED",
+    assignedLine: "Line A",
+  },
+  {
+    id: "#WO-9022",
+    productSku: "Coca-Cola Zero Sugar 330ml Can",
+    format: "330ml Euro Can",
+    plannedTarget: 350000,
+    timeWindow: "14:00 - 22:00 (Today)",
+    lineSequence: ["Infeed", "Filler", "Pack"],
+    status: "IN PRODUCTION",
+    assignedLine: "Line A",
+  },
+  {
+    id: "#WO-9023",
+    productSku: "Sprite Lemon-Lime 330ml Can",
+    format: "330ml Euro Can",
+    plannedTarget: 300000,
+    timeWindow: "22:00 - 06:00 (Tomorrow)",
+    lineSequence: ["Infeed", "Filler", "Pack"],
+    status: "SCHEDULED",
+    assignedLine: "Line A",
+  },
+  {
+    id: "#WO-9024",
+    productSku: "Fanta Orange 330ml Can",
+    format: "330ml Euro Can",
+    plannedTarget: 250000,
+    timeWindow: "06:00 - 14:00 (Tomorrow)",
+    lineSequence: ["Infeed", "Filler", "Pack"],
+    status: "SCHEDULED",
+    assignedLine: "Line A",
+  },
+  {
+    id: "#WO-9025",
+    productSku: "Coca-Cola Cherry 330ml Can",
+    format: "330ml Euro Can",
+    plannedTarget: 200000,
+    timeWindow: "14:00 - 22:00 (Tomorrow)",
+    lineSequence: ["Infeed", "Filler", "Pack"],
+    status: "PENDING",
+    assignedLine: "Line A",
+  },
+  {
+    id: "#WO-9026",
+    productSku: "Kinley Tonic Water 330ml Can",
+    format: "330ml Euro Can",
+    plannedTarget: 180000,
+    timeWindow: "22:00 - 06:00 (+2 Days)",
+    lineSequence: ["Infeed", "Filler", "Pack"],
+    status: "PENDING",
+    assignedLine: "Line A",
+  },
+];
+
+function generatePlanningForLine(
+  line: LineData,
+  factory: FactoryData,
+): { shifts: Shift[]; workOrders: WorkOrder[] } {
+  if (line.id === "line-b1") {
+    return {
+      shifts: berlinLineAShifts,
+      workOrders: berlinLineAWorkOrders,
+    };
+  }
+
+  const format = line.name.includes("—")
+    ? line.name.split("—")[1].trim()
+    : line.type;
+  const isCans = format.toLowerCase().includes("can");
+  const isGlass = format.toLowerCase().includes("glass");
+
+  const drinks = [
+    "Coca-Cola Original",
+    "Coca-Cola Zero Sugar",
+    "Sprite Lemon-Lime",
+    "Fanta Orange",
+    "Coca-Cola Cherry",
+    "Kinley Tonic Water",
+  ];
+
+  const leadsByLocation: Record<string, [string, string, string]> = {
+    berlin: ["M. Weber", "K. Fischer", "S. Richter"],
+    atlanta: ["D. Miller", "J. Adams", "R. Johnson"],
+    tokyo: ["K. Tanaka", "H. Sato", "Y. Takahashi"],
+    london: ["O. Smith", "E. Taylor", "H. Davies"],
+    "mexico-city": ["C. Garcia", "M. Rodriguez", "J. Hernandez"],
+    "sao-paulo": ["L. Silva", "G. Santos", "R. Oliveira"],
+    madrid: ["A. Martin", "P. Fernandez", "J. Lopez"],
+    sydney: ["L. Wilson", "T. Brown", "M. Taylor"],
+  };
+
+  const leads = leadsByLocation[factory.id] || [
+    "A. Smith",
+    "B. Jones",
+    "C. Davis",
+  ];
+  const sequence = isCans
+    ? ["Infeed", "Filler", "Pack"]
+    : isGlass
+    ? ["Depalletizer", "Washer", "Filler", "Pack"]
+    : ["Blower", "Filler", "Labeler", "Pack"];
+
+  const speedMultiplier = (line.kpi?.actualSpeed || 50000) / 60000;
+  const targetA = Math.max(
+    100000,
+    Math.round((380000 * speedMultiplier) / 10000) * 10000,
+  );
+  const targetB = Math.max(
+    100000,
+    Math.round((330000 * speedMultiplier) / 10000) * 10000,
+  );
+  const targetC = Math.max(
+    100000,
+    Math.round((280000 * speedMultiplier) / 10000) * 10000,
+  );
+
+  const isDowntime = line.status === "downtime";
+  const progressRatioB = isDowntime ? 0.38 : 0.65;
+  const producedB = Math.round((targetB * progressRatioB) / 1000) * 1000;
+  const percentB = Math.round((producedB / targetB) * 100);
+
+  const shifts: Shift[] = [
+    {
+      id: `${line.id}-shift-a`,
+      name: "Shift A",
+      timeWindow: "06:00 - 14:00",
+      sku: `${drinks[0]} ${format}`,
+      packageType: format,
+      producedUnits: targetA,
+      targetUnits: targetA,
+      percentage: 100,
+      status: "COMPLETED",
+      lineLead: leads[0],
+    },
+    {
+      id: `${line.id}-shift-b`,
+      name: "Shift B",
+      timeWindow: "14:00 - 22:00",
+      isActiveShift: true,
+      sku: `${drinks[1]} ${format}`,
+      packageType: format,
+      producedUnits: producedB,
+      targetUnits: targetB,
+      percentage: percentB,
+      status: "RUNNING",
+      lineLead: leads[1],
+    },
+    {
+      id: `${line.id}-shift-c`,
+      name: "Shift C",
+      timeWindow: "22:00 - 06:00",
+      sku: `${drinks[2]} ${format}`,
+      packageType: format,
+      producedUnits: 0,
+      targetUnits: targetC,
+      percentage: 0,
+      status: "QUEUED",
+      lineLead: leads[2],
+    },
+  ];
+
+  const numSeed = parseInt(line.id.replace(/\D/g, "") || "1", 10) * 100;
+  const workOrders: WorkOrder[] = [
+    {
+      id: `#WO-${numSeed + 1}`,
+      productSku: `${drinks[0]} ${format}`,
+      format,
+      plannedTarget: targetA,
+      timeWindow: "06:00 - 14:00 (Today)",
+      lineSequence: sequence,
+      status: "COMPLETED",
+      assignedLine: line.name,
+    },
+    {
+      id: `#WO-${numSeed + 2}`,
+      productSku: `${drinks[1]} ${format}`,
+      format,
+      plannedTarget: targetB,
+      timeWindow: "14:00 - 22:00 (Today)",
+      lineSequence: sequence,
+      status: "IN PRODUCTION",
+      assignedLine: line.name,
+    },
+    {
+      id: `#WO-${numSeed + 3}`,
+      productSku: `${drinks[2]} ${format}`,
+      format,
+      plannedTarget: targetC,
+      timeWindow: "22:00 - 06:00 (Tomorrow)",
+      lineSequence: sequence,
+      status: "SCHEDULED",
+      assignedLine: line.name,
+    },
+    {
+      id: `#WO-${numSeed + 4}`,
+      productSku: `${drinks[3]} ${format}`,
+      format,
+      plannedTarget: Math.round((targetA * 0.8) / 10000) * 10000,
+      timeWindow: "06:00 - 14:00 (Tomorrow)",
+      lineSequence: sequence,
+      status: "SCHEDULED",
+      assignedLine: line.name,
+    },
+    {
+      id: `#WO-${numSeed + 5}`,
+      productSku: `${drinks[4]} ${format}`,
+      format,
+      plannedTarget: Math.round((targetB * 0.75) / 10000) * 10000,
+      timeWindow: "14:00 - 22:00 (Tomorrow)",
+      lineSequence: sequence,
+      status: "PENDING",
+      assignedLine: line.name,
+    },
+    {
+      id: `#WO-${numSeed + 6}`,
+      productSku: `${drinks[5]} ${format}`,
+      format,
+      plannedTarget: Math.round((targetC * 0.7) / 10000) * 10000,
+      timeWindow: "22:00 - 06:00 (+2 Days)",
+      lineSequence: sequence,
+      status: "PENDING",
+      assignedLine: line.name,
+    },
+  ];
+
+  return { shifts, workOrders };
+}
+
+// Populate mock machines & planning data for every line in all factories
 for (const factory of factoriesData) {
   for (const line of factory.lines) {
     line.machines = generateMachinesForLine(line);
+    const planning = generatePlanningForLine(line, factory);
+    line.shifts = planning.shifts;
+    line.workOrders = planning.workOrders;
   }
+}
+
+export function getShiftsForLine(
+  factoryId?: string,
+  lineId?: string,
+): Shift[] {
+  const factory = factoryId
+    ? factoriesData.find((f) => f.id.toLowerCase() === factoryId.toLowerCase()) ||
+      factoriesData[0]
+    : factoriesData.find((f) => f.id === "berlin") || factoriesData[0];
+  const line = lineId
+    ? factory.lines.find((l) => l.id.toLowerCase() === lineId.toLowerCase())
+    : factory.lines.find((l) => l.id === "line-b1") || factory.lines[0];
+  return line?.shifts || berlinLineAShifts;
+}
+
+export function getWorkOrdersForLine(
+  factoryId?: string,
+  lineId?: string,
+): WorkOrder[] {
+  const factory = factoryId
+    ? factoriesData.find((f) => f.id.toLowerCase() === factoryId.toLowerCase()) ||
+      factoriesData[0]
+    : factoriesData.find((f) => f.id === "berlin") || factoriesData[0];
+  const line = lineId
+    ? factory.lines.find((l) => l.id.toLowerCase() === lineId.toLowerCase())
+    : factory.lines.find((l) => l.id === "line-b1") || factory.lines[0];
+  return line?.workOrders || berlinLineAWorkOrders;
 }
 
 export {
