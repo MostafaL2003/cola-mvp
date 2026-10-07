@@ -77,7 +77,7 @@ This plan tracks the 8 core tasks required to build the MVP based on the Figma e
 
 ## Task 7: Factory Detail Page (`/[factoryId]`)
 
-- [ ] **7.1 Large KPI Header**:
+- [x] **7.1 Large KPI Header**:
   - Expanded version of the factory's KPICard data
 - [x] **7.2 Loss Tree Component**:
   - Visual breakdown: ON/OFF %, Quality Loss/Speed Loss %, and the 5 reasons (Breakdown, Cleansing process, Change over time, Idle, Minor stops)
@@ -98,3 +98,26 @@ This plan tracks the 8 core tasks required to build the MVP based on the Figma e
   - Tabbed toggle switching between OE, MTBF, and Uptime views (replaces the Loss Tree)
 - [x] **8.4 Right Panel**:
   - Shared 3 trend line-charts (Cycle Time, Speed, Uptime)
+
+---
+
+## Task 9: Machines Catalog & Diagnostics (`/machines`)
+
+- [x] **9.1 Interactive 3D Two-Face Machine Cards**:
+  - Operational vitals on front (Speed, Cycle Time, Temp, Pressure, Telemetry)
+  - Preventative maintenance diagnostics on back (Vibration, Fluid Level, Health Score, Service dates)
+- [x] **9.2 Dynamic Line Context**:
+  - Synchronized with active TopBar factory & line selections
+
+---
+
+## Task 10: Production Planning & Scheduling (`/planning`)
+
+- [x] **10.1 Daily Shift Execution**:
+  - 3-shift cards (Shift A completed, Shift B active, Shift C queued) with SKU progress bars and status pills
+- [x] **10.2 Scheduled Production Batches Table**:
+  - Work order queue table with batch IDs, SKU, planned targets, time windows, sequence steps, and status badges
+- [x] **10.3 Create Work Order Modal**:
+  - Modal dialog for adding new batches to the active line schedule
+- [x] **10.4 Centralized Dynamic Data**:
+  - Fully dynamic data powered by `lib/data.ts` syncing with the selected factory and line
