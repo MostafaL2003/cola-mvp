@@ -10,16 +10,18 @@ import { MachineData } from "@/types/mes";
 export function useMachinesLiveTelemetry(
   initialMachines: MachineData[]
 ): MachineData[] {
-  const [machines, setMachines] = useState<MachineData[]>(initialMachines);
-
   // Serialize IDs to only reset when switching to a different line or factory
   const machinesKey = useMemo(() => {
     return (initialMachines || []).map((m) => `${m.id}-${m.status}`).join("|");
   }, [initialMachines]);
 
-  useEffect(() => {
+  const [prevKey, setPrevKey] = useState(machinesKey);
+  const [machines, setMachines] = useState<MachineData[]>(initialMachines);
+
+  if (machinesKey !== prevKey) {
+    setPrevKey(machinesKey);
     setMachines(initialMachines);
-  }, [machinesKey, initialMachines]);
+  }
 
   useEffect(() => {
     const intervalId = setInterval(() => {

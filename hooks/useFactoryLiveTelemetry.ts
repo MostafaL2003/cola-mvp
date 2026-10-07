@@ -18,6 +18,8 @@ export interface UseFactoryLiveTelemetryReturn {
 export function useFactoryLiveTelemetry(
   initialFactory: FactoryData
 ): UseFactoryLiveTelemetryReturn {
+  const [prevFactory, setPrevFactory] = useState(initialFactory);
+
   const [cycleTime, setCycleTime] = useState<number>(
     initialFactory.kpi.lastHourCycleTime ?? 1.95
   );
@@ -41,8 +43,8 @@ export function useFactoryLiveTelemetry(
     return initialFactory.trendData || sampleHourlyTrend;
   });
 
-  // Re-sync if initialFactory changes
-  useEffect(() => {
+  if (initialFactory !== prevFactory) {
+    setPrevFactory(initialFactory);
     setCycleTime(initialFactory.kpi.lastHourCycleTime ?? 1.95);
     setSpeed(initialFactory.kpi.actualSpeed ?? 54200);
     setActualProduction(initialFactory.kpi.actualProduction ?? 418500);
@@ -52,7 +54,7 @@ export function useFactoryLiveTelemetry(
     setPerformance(initialFactory.performanceKpi?.performance ?? 76);
     setQuality(initialFactory.performanceKpi?.quality ?? 94);
     setTrendData(initialFactory.trendData || sampleHourlyTrend);
-  }, [initialFactory]);
+  }
 
   useEffect(() => {
     const intervalId = setInterval(() => {

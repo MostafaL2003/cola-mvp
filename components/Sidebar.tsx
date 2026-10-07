@@ -97,6 +97,7 @@ export default function Sidebar() {
               <Link
                 key={item.label}
                 href={item.href}
+                prefetch={true}
                 onClick={() => setMobileOpen(false)}
                 className={`flex items-center gap-3.5 px-4 py-3.5 rounded-xl text-[15px] font-montserrat transition-all duration-200 ease-in-out cursor-pointer ${
                   active
@@ -120,6 +121,7 @@ export default function Sidebar() {
               <Link
                 key={item.label}
                 href={item.href}
+                prefetch={true}
                 onClick={() => setMobileOpen(false)}
                 className={`flex items-center gap-3.5 px-4 py-3.5 rounded-xl text-[15px] font-montserrat transition-all duration-200 ease-in-out cursor-pointer ${
                   active

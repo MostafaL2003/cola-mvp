@@ -1,5 +1,5 @@
 import React from "react";
-import { CheckCircle2, Clock, PlayCircle, Users } from "lucide-react";
+import { CheckCircle2, Clock, Users } from "lucide-react";
 
 export interface ShiftExecutionData {
   id: string;

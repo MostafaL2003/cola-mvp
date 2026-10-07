@@ -2,6 +2,8 @@
 
 A modern, high-performance industrial IoT & Manufacturing Execution System (MES) web application designed for Coca-Cola bottling and canning facilities worldwide. Built with **Next.js 16 (App Router)**, **React 19**, **TypeScript**, and **Tailwind CSS v4**.
 
+🌐 **Live Demo**: [https://cola-mvp.vercel.app](https://cola-mvp.vercel.app)
+
 ---
 
 ## 🌟 Overview
@@ -163,6 +165,11 @@ npm run build
 # Start production server
 npm run start
 ```
+
+### Live Deployment
+
+The latest production build is deployed and hosted on Vercel:
+- **Production URL**: [https://cola-mvp.vercel.app](https://cola-mvp.vercel.app)
 
 ---
 

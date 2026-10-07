@@ -6,11 +6,13 @@ import { FactoryData } from "@/types/mes";
 export function useAllFactoriesLiveTelemetry(
   initialFactories: FactoryData[]
 ): FactoryData[] {
+  const [prevInitial, setPrevInitial] = useState(initialFactories);
   const [factories, setFactories] = useState<FactoryData[]>(initialFactories);
 
-  useEffect(() => {
+  if (initialFactories !== prevInitial) {
+    setPrevInitial(initialFactories);
     setFactories(initialFactories);
-  }, [initialFactories]);
+  }
 
   useEffect(() => {
     const intervalId = setInterval(() => {

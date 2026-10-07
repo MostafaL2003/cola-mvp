@@ -36,6 +36,7 @@ export function useLiveTelemetry(
     return sampleActivityData;
   }, []);
 
+  const [prevLine, setPrevLine] = useState(initialLine);
   const [cycleTime, setCycleTime] = useState<number>(initialCycleTime);
   const [bph, setBph] = useState<number>(initialBph);
   const [activityTrend, setActivityTrend] =
@@ -44,8 +45,8 @@ export function useLiveTelemetry(
     return initialLine.trendData || sampleHourlyTrend;
   });
 
-  // Reset state if initialLine changes
-  useEffect(() => {
+  if (initialLine !== prevLine) {
+    setPrevLine(initialLine);
     setCycleTime(initialLine.kpi.lastHourCycleTime ?? 1.08);
     setBph(
       initialLine.lineProduction?.ratePerHour ??
@@ -53,7 +54,7 @@ export function useLiveTelemetry(
         5000,
     );
     setTrendData(initialLine.trendData || sampleHourlyTrend);
-  }, [initialLine]);
+  }
 
   useEffect(() => {
     const intervalId = setInterval(() => {
